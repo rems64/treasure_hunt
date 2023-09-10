@@ -1,3 +1,4 @@
+use actix_files::Files;
 use actix_web::{App, HttpServer};
 
 use std::env;
@@ -10,10 +11,15 @@ async fn main() -> std::io::Result<()> {
 
     println!("Starting server...");
 
-    let bind_addr = ("0.0.0.0", 80);
+    // let bind_addr = ("0.0.0.0", 80);
+    let bind_addr = ("127.0.0.1", 8080);
 
-    HttpServer::new(|| App::new().service(home))
-        .bind(bind_addr)?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new()
+            .service(home)
+            .service(Files::new("*.css", "src/routes/home/"))
+    })
+    .bind(bind_addr)?
+    .run()
+    .await
 }
